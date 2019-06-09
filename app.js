@@ -42,8 +42,8 @@ const drawCanvas = () => {
 
     for (let x = 0; x < numberColumns; x += 1) {
       for (let y = 0; y < numberRows; y += 1) {
-        const positionX = gapLeft + x * SIZE * 4 + SIZE * 1.5;
-        const positionY = gapTop + y * SIZE * 4 + SIZE * 1.5;
+        const positionX = gapLeft + x * SIZE * 4 + SIZE * 2;
+        const positionY = gapTop + y * SIZE * 4 + SIZE * 2;
         ctx.save();
         ctx.translate(positionX, positionY);
         const rotation = Math.floor(Math.random() * 4);
