@@ -19,11 +19,11 @@ const GAP = parseInt(args.gap);
 const canvas = createCanvas(WIDTH, HEIGHT);
 const ctx = canvas.getContext('2d');
 
-const numberColumns = (WIDTH - GAP * 2) / (SIZE * 4);
-const numberRows = (HEIGHT - GAP * 2) / (SIZE * 4);
-const gapLeft = Math.floor((WIDTH - GAP * 2 - SIZE * 4 * numberColumns) / 2) + GAP;
-const gapTop = Math.floor((HEIGHT - GAP * 2 - SIZE * 4 * numberRows) / 2) + GAP;
-console.log(numberColumns, numberRows);
+const numberColumns = Math.floor((WIDTH - GAP * 2) / (SIZE * 11));
+const numberRows = Math.floor((HEIGHT - GAP * 2) / (SIZE * 11));
+const gapLeft = Math.floor(WIDTH - GAP * 2 - SIZE * 11 * numberColumns) / 2 + GAP;
+const gapTop = Math.floor(HEIGHT - GAP * 2 - SIZE * 11 * numberRows) / 2 + GAP;
+console.log(numberColumns, GAP, SIZE, gapLeft);
 
 const patterns = [
   [0, 0, 1, 0, 1, 1, 1, 1, 1],
@@ -34,6 +34,22 @@ const patterns = [
   [1, 1, 1, 0, 0, 1, 0, 1, 1],
 ];
 
+const drawPattern = (x, y) => {
+  ctx.save();
+  ctx.translate(x, y);
+  const rotation = Math.floor(Math.random() * 4);
+  ctx.rotate((Math.PI * rotation) / 2);
+  const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+  pattern.forEach((value, index) => {
+    const pX = index % 3;
+    const pY = Math.floor(index / 3);
+    if (value == 1) {
+      ctx.fillRect(pX * SIZE - SIZE * 1.5, pY * SIZE - SIZE * 1.5, SIZE, SIZE);
+    }
+  });
+  ctx.restore();
+};
+
 const drawCanvas = () => {
   return new Promise((resolve) => {
     ctx.fillStyle = '#FFF';
@@ -42,23 +58,12 @@ const drawCanvas = () => {
 
     for (let x = 0; x < numberColumns; x += 1) {
       for (let y = 0; y < numberRows; y += 1) {
-        const positionX = gapLeft + x * SIZE * 4 + SIZE * 2;
-        const positionY = gapTop + y * SIZE * 4 + SIZE * 2;
-        ctx.save();
-        ctx.translate(positionX, positionY);
-        const rotation = Math.floor(Math.random() * 4);
-        ctx.rotate((Math.PI * rotation) / 2);
-        const pattern = patterns[Math.floor(Math.random() * patterns.length)];
-        pattern.forEach((value, index) => {
-          const pX = index % 3;
-          const pY = Math.floor(index / 3);
-          if (value == 1) {
-            ctx.fillRect(pX * SIZE - SIZE * 1.5, pY * SIZE - SIZE * 1.5, SIZE, SIZE);
-          }
-        });
-        // ctx.fillStyle = 'red';
-        // ctx.fillRect(0, 0, 3, 3);
-        ctx.restore();
+        const positionX = gapLeft + x * SIZE * 11 + SIZE * 3;
+        const positionY = gapTop + y * SIZE * 11 + SIZE * 3;
+        drawPattern(positionX, positionY);
+        drawPattern(positionX + SIZE * 4, positionY);
+        drawPattern(positionX, positionY + SIZE * 4);
+        drawPattern(positionX + SIZE * 4, positionY + SIZE * 4);
       }
     }
     resolve();
