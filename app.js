@@ -34,12 +34,23 @@ const patterns = [
   [1, 1, 1, 0, 0, 1, 0, 1, 1],
 ];
 
-const drawPattern = (x, y) => {
+let previousPattern = null;
+let previousRotate = null;
+
+const drawPattern = (x, y, sameAsBefore = false) => {
   ctx.save();
   ctx.translate(x, y);
   const rotation = Math.floor(Math.random() * 4);
-  ctx.rotate((Math.PI * rotation) / 2);
-  const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+  let pattern = null;
+  if (sameAsBefore && Math.random() < 1 / 3) {
+    pattern = previousPattern;
+    ctx.rotate(previousRotate);
+  } else {
+    pattern = patterns[Math.floor(Math.random() * patterns.length)];
+    ctx.rotate((Math.PI * rotation) / 2);
+  }
+  previousPattern = pattern;
+  previousRotate = (Math.PI * rotation) / 2;
   pattern.forEach((value, index) => {
     const pX = index % 3;
     const pY = Math.floor(index / 3);
@@ -61,9 +72,9 @@ const drawCanvas = () => {
         const positionX = gapLeft + x * SIZE * 11 + SIZE * 3;
         const positionY = gapTop + y * SIZE * 11 + SIZE * 3;
         drawPattern(positionX, positionY);
-        drawPattern(positionX + SIZE * 4, positionY);
+        drawPattern(positionX + SIZE * 4, positionY, true);
         drawPattern(positionX, positionY + SIZE * 4);
-        drawPattern(positionX + SIZE * 4, positionY + SIZE * 4);
+        drawPattern(positionX + SIZE * 4, positionY + SIZE * 4, true);
       }
     }
     resolve();
